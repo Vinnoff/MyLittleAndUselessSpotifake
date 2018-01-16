@@ -4,6 +4,16 @@ from rest_framework import serializers
 """HyperlinkedModelSerializer. """
 """You can also use primary key and various other relationships, but hyperlinking is good RESTful design."""
 
+
+""" Albums """
+
+""" Artistes """
+
+""" Musiques """
+
+""" Images """
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
