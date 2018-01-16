@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from Spotifake.models import Music
 
 """HyperlinkedModelSerializer. """
 """You can also use primary key and various other relationships, but hyperlinking is good RESTful design."""
@@ -10,6 +11,12 @@ from rest_framework import serializers
 """ Artistes """
 
 """ Musiques """
+
+class MusicSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Music
+        fields = ('id', 'title', 'album')
 
 """ Images """
 
