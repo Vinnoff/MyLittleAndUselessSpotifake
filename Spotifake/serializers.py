@@ -12,13 +12,22 @@ from Spotifake.models import Music
 
 """ Musiques """
 
+
 class MusicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Music
         fields = ('id', 'title')
 
+
 """ Images """
+
+
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Music
+        fields = ('id', 'link')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
