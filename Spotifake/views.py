@@ -5,14 +5,25 @@ from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
-from Spotifake.serializers import MusicSerializer, ImageSerializer, EntertainerSerializer, UserSerializer, GroupSerializer
-from Spotifake.models import Music, Images, Entertainer
+from Spotifake.serializers import MusicSerializer, ImageSerializer, EntertainerSerializer, AlbumSerializer, UserSerializer, GroupSerializer
+from Spotifake.models import Music, Images, Entertainer, Album
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.exceptions import ParseError
 
 
 """ Albums """
+
+
+@csrf_exempt
+def album_list(request):
+    return list_methods(Album, AlbumSerializer, request)
+
+
+@csrf_exempt
+def album_detail(request, pk):
+    return  detail_methods(Album, AlbumSerializer, request, pk)
+
 
 """ Artistes """
 
@@ -32,7 +43,7 @@ def entertainer_detail(request, pk):
 
 @csrf_exempt
 def music_list(request):
-    return list_methods(Images, ImageSerializer, request)
+    return list_methods(Music, MusicSerializer, request)
 
 
 @csrf_exempt
@@ -81,7 +92,7 @@ def detail_methods(model, serial, request, pk):
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = ImageSerializer(selected_model)
+        serializer = serial(selected_model)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
