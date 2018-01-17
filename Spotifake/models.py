@@ -6,6 +6,8 @@ from django.db import models
 
 class Album(models.Model):
     album_name = models.CharField(max_length=200)
+    album_entertainers = models.ManyToManyField(Entertainer)
+    album_image = models.ForeignKey(Images, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.album_name
@@ -16,6 +18,8 @@ class Album(models.Model):
 
 class Entertainer(models.Model):
     stage_name = models.CharField(max_length=200)
+    stage_image = models.ForeignKey(Images, on_delete=models.CASCADE)
+    album_image = models.ForeignKey(Images, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.stage_name
@@ -25,7 +29,8 @@ class Entertainer(models.Model):
 
 
 class Music(models.Model):
-    title = models.CharField(max_length=200)
+    music_title = models.CharField(max_length=200)
+    music_album = models.ForeignKey(Album, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
