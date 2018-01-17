@@ -5,8 +5,8 @@ from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
-from Spotifake.serializers import MusicSerializer, ImageSerializer, UserSerializer, GroupSerializer
-from Spotifake.models import Music, Images
+from Spotifake.serializers import MusicSerializer, ImageSerializer, EntertainerSerializer, UserSerializer, GroupSerializer
+from Spotifake.models import Music, Images, Entertainer
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.exceptions import ParseError
@@ -16,60 +16,28 @@ from rest_framework.exceptions import ParseError
 
 """ Artistes """
 
+
+@csrf_exempt
+def entertainer_list(request):
+    return list_methods(Entertainer, EntertainerSerializer, request)
+
+
+@csrf_exempt
+def entertainer_detail(request, pk):
+    return  detail_methods(Entertainer, EntertainerSerializer, request, pk)
+
+
 """ Musiques """
 
 
 @csrf_exempt
 def music_list(request):
-    if request.method == 'GET':
-        musics = Music.objects.all()
-        serializer = MusicSerializer(musics, many=True)
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-
-    elif request.method == 'POST':
-        try:
-            data = JSONParser().parse(request)
-        except ParseError:
-            return HttpResponse(status=400)
-        serializer = MusicSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return list_methods(Images, ImageSerializer, request)
 
 
 @csrf_exempt
 def music_detail(request, pk):
-    try:
-        music = Music.objects.get(pk=pk)
-    except Music.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = MusicSerializer(music)
-        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-
-    elif request.method == 'PUT':
-        try:
-            data = JSONParser().parse(request)
-        except ParseError:
-            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-        serializer = MusicSerializer(music, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        music.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
-
-    else:
-        return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    return detail_methods(Music, MusicSerializer, request, pk)
 
 
 """ Images """
@@ -77,9 +45,18 @@ def music_detail(request, pk):
 
 @csrf_exempt
 def images_list(request):
+    return list_methods(Images, ImageSerializer, request)
+
+
+@csrf_exempt
+def images_detail(request, pk):
+    return detail_methods(Images, ImageSerializer, request, pk)
+
+
+def list_methods(model, serial, request):
     if request.method == 'GET':
-        images = Images.objects.all()
-        serializer = ImageSerializer(images, many=True)
+        all_object = model.objects.all()
+        serializer = serial(all_object, many=True)
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
@@ -87,7 +64,7 @@ def images_list(request):
             data = JSONParser().parse(request)
         except ParseError:
             return HttpResponse(status=400)
-        serializer = ImageSerializer(data=data)
+        serializer = serial(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -97,15 +74,14 @@ def images_list(request):
         return HttpResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@csrf_exempt
-def images_detail(request, pk):
+def detail_methods(model, serial, request, pk):
     try:
-        images = Images.objects.get(pk=pk)
-    except Images.DoesNotExist:
+        selected_model = model.objects.get(pk=pk)
+    except model.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = ImageSerializer(images)
+        serializer = ImageSerializer(selected_model)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'PUT':
@@ -113,7 +89,7 @@ def images_detail(request, pk):
             data = JSONParser().parse(request)
         except ParseError:
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-        serializer = ImageSerializer(images, data=data)
+        serializer = serial(selected_model, data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
@@ -121,7 +97,7 @@ def images_detail(request, pk):
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        images.delete()
+        selected_model.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     else:

@@ -5,6 +5,14 @@ from django.db import models
 
 """ Artistes """
 
+
+class Entertainer(models.Model):
+    stage_name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.stage_name
+
+
 """ Musiques """
 
 

@@ -10,6 +10,14 @@ from Spotifake.models import Music
 
 """ Artistes """
 
+
+class EntertainerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Music
+        fields = ('id', 'stage_name')
+
+
 """ Musiques """
 
 
