@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
-from Spotifake.serializers import MusicSerializer, ImageSerializer, EntertainerSerializer, AlbumSerializer, UserSerializer, GroupSerializer
+from Spotifake.serializers import MusicSerializer, ImageSerializer, EntertainerSerializer, AlbumSerializer
 from Spotifake.models import Music, Images, Entertainer, Album
 from rest_framework import status
 from rest_framework.parsers import JSONParser
